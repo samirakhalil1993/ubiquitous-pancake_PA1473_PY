@@ -10,8 +10,9 @@ if __name__ == '__main__':
 
 
 # Import libraries
-from pybricks.ev3devices import Motor, ColorSensor
-from pybricks.parameters import Port
+
+from pybricks.ev3devices import Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor
+from pybricks.parameters import Port, Button
 from pybricks.robotics import DriveBase
 
 from pybricks.hubs import EV3Brick
@@ -51,10 +52,16 @@ while True:
 
     
 
-    if Ultrasonic_sensor.distance() < 150:
-        mod_speed = -0.1
-        robot.drive(mod_speed * speed, 0)
-    #    print(Ultrasonic_sensor.distance())
+    elif Ultrasonic_sensor.distance() < 100:
+            Left_drive.stop()
+            Right_drive.stop()
+
+    elif Front_button.pressed():
+        Crane_motor == (Button.LEFT_UP, Button.LEFT_DOWN)
+        reversing = False
+        robot.stop()
+        Left_drive.run(speed=100)
+        Right_drive.run(speed=100)
 
     else:
 
