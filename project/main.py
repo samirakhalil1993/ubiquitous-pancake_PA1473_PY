@@ -8,7 +8,3 @@ def main():
 if __name__ == '__main__':
     sys.exit(main())
 
-#samircccccccccccccccccccccccccc
-#ahmad lllllllllllllllllllllllllll
-#omar 
-#gubran
