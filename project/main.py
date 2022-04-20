@@ -9,7 +9,6 @@ if __name__ == '__main__':
     sys.exit(main())
 
 
-#!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
@@ -27,14 +26,21 @@ ev3 = EV3Brick()
 
 
 # Write your program here.
-
+ev3.speaker.beep()
+"""Left_drive=Port.C 
+Right_drive=Port.B
+Crane_motor=Port.A
+Front_button=Port.S1
+Light_sensor=Port.S3
+Ultrasonic_sensor=Port.S4"""
 # Motor definitions
 left_motor = Motor(Port.C)
 right_motor = Motor(Port.B)
 crane_motor= Motor(Port.A)
-robot = DriveBase(left_motor, right_motor, wheel_diameter= 56, axle_track= 120)
+robot = DriveBase(left_motor, right_motor, wheel_diameter= 56, axle_track= 118)
 # Sensor definitions
 left_light = ColorSensor(Port.S3)
+#right_light = ColorSensor(Port.S4) #La till denna själv ty enligt bilden ska det finnas två sensorer
 ultra_sensor = UltrasonicSensor(Port.S4)
 touch_sensor = TouchSensor(Port.S1)
 # Your code goes here
@@ -42,35 +48,36 @@ touch_sensor = TouchSensor(Port.S1)
 #Declaring some varaibles for the robot
 running = True
 
-# line_color = Color.BLACK #Chosing to only detect black as the color
-# floor_color = Color.WHITE #Floor is the white color
-BLACK = 9
-WHITE = 85
-color_between = (BLACK + WHITE) / 2
-default_speed = -100 #mm/s
-PROPORTUINAL_GAIN = 1.2
-#Making the robot move at normal speed
+line_color = Color.BLACK #Chosing to only detect black as the color
+floor_color = Color.WHITE #Floor is the white color
 
-# left_motor.dc(default_speed)
-# right_motor.dc(default_speed)
+default_speed = -40 #mm/s
+
+#Making the robot move at normal speed
+left_motor.dc(default_speed)
+right_motor.dc(default_speed)
 
 #Program loop
 
 while running:
-    deviation = left_ligt.reflection() - color_between
-    turn_rate = PROPORTIONAL_GAIN * deviation  
     while touch_sensor.pressed():
-        left_motor.stop()
-        right_motor.stop() 
+        crane_motor == (Button.LEFT_UP, Button.LEFT_DOWN)
+        reversing = False
+        robot.stop()
+        left_motor.run(speed=100)
+        right_motor.run(speed=100)
+        
     while ultra_sensor.distance() < 100:
-        left_motor.stop()
-        right_motor.stop()     
-    while left_light.reflection() == line_color:
-        robot.drive(default_speed, turn_rate)
-    whait(5)
-    robot.stop()
-    right_motor.brake()
-    left_motor.brake()
+            left_motor.stop()
+            right_motor.stop()
+            
+    if left_light.color() == line_color:
+        right_motor.dc(default_speed + 5)
+        left_motor.dc(-2)
+        print("hello world")
+    else:
+        left_motor.dc(default_speed + 3)
+        right_motor.dc(default_speed + 3)
         
 """PROPORTIONAL_GAIN = 1.2
 
