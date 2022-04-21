@@ -1,14 +1,4 @@
 #!/usr/bin/env pybricks-micropython
-import sys
-import __init__
-
-def main():
-    return 0
-
-if __name__ == '__main__':
-    sys.exit(main())
-
-
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
@@ -27,12 +17,7 @@ ev3 = EV3Brick()
 
 # Write your program here.
 ev3.speaker.beep()
-"""Left_drive=Port.C 
-Right_drive=Port.B
-Crane_motor=Port.A
-Front_button=Port.S1
-Light_sensor=Port.S3
-Ultrasonic_sensor=Port.S4"""
+
 # Motor definitions
 left_motor = Motor(Port.C)
 right_motor = Motor(Port.B)
@@ -50,47 +35,28 @@ running = True
 
 line_color = Color.BLACK #Chosing to only detect black as the color
 floor_color = Color.WHITE #Floor is the white color
-
 default_speed = -40 #mm/s
 
 #Making the robot move at normal speed
-left_motor.dc(default_speed)
-right_motor.dc(default_speed)
+#left_motor.dc(default_speed)
+#right_motor.dc(default_speed)
 
 #Program loop
-
+gg  = 0
 while running:
-    while touch_sensor.pressed():
+    if touch_sensor.pressed():
         crane_motor == (Button.LEFT_UP, Button.LEFT_DOWN)
-        reversing = False
-        robot.stop()
-        left_motor.run(speed=100)
-        right_motor.run(speed=100)
-        
+        print("ewjwngv")
     while ultra_sensor.distance() < 100:
             left_motor.stop()
             right_motor.stop()
-            
-    if left_light.color() == line_color:
-        right_motor.dc(default_speed + 5)
-        left_motor.dc(-2)
+            print("gewef")
+    while left_light.color() == line_color:
+        robot.drive(-40,15)
+
+            # right_motor.dc(default_speed + 5)
+            # left_motor.dc(default_speed + 5)
         print("hello world")
-    else:
-        left_motor.dc(default_speed + 3)
-        right_motor.dc(default_speed + 3)
         
-"""PROPORTIONAL_GAIN = 1.2
-
-# Start following the line endlessly.
-while True:
-    # Calculate the deviation from the threshold.
-    deviation = line_sensor.reflection() - threshold
-
-    # Calculate the turn rate.
-    turn_rate = PROPORTIONAL_GAIN * deviation
-
-    # Set the drive base speed and turn rate.
-    robot.drive(DRIVE_SPEED, turn_rate)
-
-    # You can wait for a short time or do other things in this loop.
-    wait(10)"""
+    
+        
