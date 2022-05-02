@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
@@ -12,6 +13,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 
 # Create your objects here.
+
 ev3 = EV3Brick()
 
 
@@ -54,8 +56,7 @@ while running:
     while left_light.color() == line_color:
         robot.drive(-40,15)
 
-            # right_motor.dc(default_speed + 5)
-            # left_motor.dc(default_speed + 5)
+            
         print("hello world")
         
     
