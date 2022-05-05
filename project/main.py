@@ -1,4 +1,5 @@
 #!/usr/bin/env pybricks-micropython
+#!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
@@ -52,15 +53,13 @@ default_speede = 0
 
 #Program loop
 while running:
-    while touch_sensor.pressed():
+    if touch_sensor.pressed():
 
-        crane_motor.dc(default_speed_crane + 100)
-        robot.stop()
+        crane_motor.dc(default_speed_crane - 100)
         print("gg boys")
         if not touch_sensor.pressed():
-            
             correction = (30-left_light.reflection())*2
-            robot.drive(100,correction)
+            robot.drive(-100,correction)
             print("gg girls")
             
     #if not touch_sensor.pressed():
@@ -78,8 +77,8 @@ while running:
         robot.stop()
         wait(10)
 
-    crane_motor.dc(default_speed_crane-50)
-    correction = (30-left_light.reflection())*2
+    crane_motor.dc(default_speed_crane+50)
+    correction = (20-left_light.reflection())*2
     robot.drive(-100,correction)
 
     
