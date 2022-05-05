@@ -1,166 +1,62 @@
-#!/usr/bin/env pybricks-micropython 
-from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor, InfraredSensor
-from pybricks.media.ev3dev import SoundFile
-from pybricks.parameters import Button, Direction, Port
-from pybricks.robotics import DriveBase
+#!/usr/bin/env pybricks-micropython
+from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor, TouchSensor
+from pybricks.parameters import Port
 from pybricks.tools import wait
+from pybricks.robotics import DriveBase
+
+# Initialize the motors.
+left_motor = Motor(Port.B)
+right_motor = Motor(Port.C)
+ultra_sensor = UltrasonicSensor(Port.S4)
+#Crane_motor=Port.A
+Front_button=Port.S1
+crane_motor= Motor(Port.A)
+touch_sensor = TouchSensor(Port.S1)
+# Initialize the color sensor.
+line_sensor = ColorSensor(Port.S3)
+
+# Initialize the drive base.
+robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=104)
+
+# Calculate the light threshold. Choose values based on your measurements.
+BLUE = 80
+PURPLE= 95
+WHITE = 85
+threshold = (BLUE + WHITE) / 2
+
+# Set the drive speed at 100 millimeters per second.
+DRIVE_SPEED = -30
+
+# Set the gain of the proportional line controller. This means that for every
+# percentage point of light deviating from the threshold, we set the turn
+# rate of the drivebase to 1.2 degrees per second.
+
+# For example, if the light value deviates from the threshold by 10, the robot
+# steers at 101.2 = 12 degrees per second.
+PROPORTIONAL_GAIN = 1.2
+
+# def forward():
+#     robot.drive(DRIVE_SPEED, turn_rate)
 
 
-class Bobb3e:
-    WHEEL_DIAMETER = 24   # milimeters
-    AXLE_TRACK = 100      # milimeters
 
-    def __init__(
-            self,
-            left_motor_port: str = Port.B, right_motor_port: str = Port.C,
-            lift_motor_port: str = Port.A,
-            ir_sensor_port: str = Port.S4, ir_beacon_channel: int = 1):
-        self.ev3_brick = EV3Brick()
+# Start following the line endlessly.
+while True:
+    print(line_sensor.reflection())
 
-        left_motor = Motor(port=left_motor_port,
-                           positive_direction=Direction.COUNTERCLOCKWISE)
-        right_motor = Motor(port=right_motor_port,
-                            positive_direction=Direction.COUNTERCLOCKWISE)
-        self.drive_base = DriveBase(left_motor=left_motor,
-                                    right_motor=right_motor,
-                                    wheel_diameter=self.WHEEL_DIAMETER,
-                                    axle_track=self.AXLE_TRACK)
+    if line_sensor.reflection() > 77:
+        correction = (20-line_sensor.reflection())2
+        robot.drive(-75,correction)
 
-        self.lift_motor = Motor(port=lift_motor_port,
-                                positive_direction=Direction.CLOCKWISE)
+    elif line_sensor.reflection() < 20:
+        robot.drive(DRIVE_SPEED - 20, line_sensor.reflection())
 
-        self.ir_sensor = InfraredSensor(port=ir_sensor_port)
-        self.ir_beacon_channel = ir_beacon_channel
+    elif 68 <= line_sensor.reflection() <= 77:
+        robot.drive(DRIVE_SPEED - 14, line_sensor.reflection())
+    else:
 
-        self.reversing = False
 
-    def drive_or_operate_forks_by_ir_beacon(
-            self,
-            driving_speed: float = 1000,    # mm/s
-            turn_rate: float = 90   # rotational speed deg/s
-            ):
-        """
-        Read the commands from the remote control and convert them into actions
-        such as go forward, lift and turn.
-        """
-        while True:
-            ir_beacon_button_pressed = \
-                set(self.ir_sensor.buttons(channel=self.ir_beacon_channel))
-
-            # lower the forks
-            if ir_beacon_button_pressed == {Button.LEFT_UP, Button.LEFT_DOWN}:
-                self.reversing = False
-
-                self.drive_base.stop()
-
-                self.lift_motor.run(speed=100)
-
-            # raise the forks
-            elif ir_beacon_button_pressed == \
-                    {Button.RIGHT_UP, Button.RIGHT_DOWN}:
-                self.reversing = False
-
-                self.drive_base.stop()
-
-                self.lift_motor.run(speed=-100)
-
-            # forward
-            elif ir_beacon_button_pressed == {Button.LEFT_UP, Button.RIGHT_UP}:
-                self.reversing = False
-
-                self.drive_base.drive(
-                    speed=driving_speed,
-                    turn_rate=0)
-
-                self.lift_motor.hold()
-
-            # backward
-            elif ir_beacon_button_pressed == \
-                    {Button.LEFT_DOWN, Button.RIGHT_DOWN}:
-                self.reversing = True
-
-                self.drive_base.drive(
-                    speed=-driving_speed,
-                    turn_rate=0)
-
-                self.lift_motor.hold()
-
-            # turn left on the spot
-            elif ir_beacon_button_pressed == \
-                    {Button.LEFT_UP, Button.RIGHT_DOWN}:
-                self.reversing = False
-
-                self.drive_base.drive(
-                    speed=0,
-                    turn_rate=-turn_rate)
-
-                self.lift_motor.hold()
-
-            # turn right on the spot
-            elif ir_beacon_button_pressed == \
-                    {Button.RIGHT_UP, Button.LEFT_DOWN}:
-                self.reversing = False
-
-                self.drive_base.drive(
-                    speed=0,
-                    turn_rate=turn_rate)
-
-                self.lift_motor.hold()
-
-            # turn left forward
-            elif ir_beacon_button_pressed == {Button.LEFT_UP}:
-                self.reversing = False
-
-                self.drive_base.drive(
-                    speed=driving_speed,
-                    turn_rate=-turn_rate)
-
-                self.lift_motor.hold()
-
-            # turn right forward
-            elif ir_beacon_button_pressed == {Button.RIGHT_UP}:
-                self.reversing = False
-
-                self.drive_base.drive(
-                    speed=driving_speed,
-                    turn_rate=turn_rate)
-
-                self.lift_motor.hold()
-
-            # turn left backward
-            elif ir_beacon_button_pressed == {Button.LEFT_DOWN}:
-                self.reversing = True
-
-                self.drive_base.drive(
-                    speed=-driving_speed,
-                    turn_rate=turn_rate)
-
-                self.lift_motor.hold()
-
-            # turn right backward
-            elif ir_beacon_button_pressed == {Button.RIGHT_DOWN}:
-                self.reversing = True
-
-                self.drive_base.drive(
-                    speed=-driving_speed,
-                    turn_rate=-turn_rate)
-
-                self.lift_motor.hold()
-
-            # otherwise stop
-            else:
-                self.reversing = False
-
-                self.drive_base.stop()
-
-                self.lift_motor.hold()
-
-            wait(10)
-
-    def sound_alarm_whenever_reversing(self):
-        while True:
-            if self.reversing:
-                self.ev3_brick.speaker.play_file(file=SoundFile.BACKING_ALERT)
-
-            wait(10)
+        correction = (20-line_sensor.reflection())*2
+        robot.drive(-56,correction)
+        print("fuck me again")
+    #print("fuck me")
