@@ -1,7 +1,7 @@
 #!/usr/bin/env pybricks-micropython
-#!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,InfraredSensor, UltrasonicSensor, GyroSensor)
+from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
+                                 InfraredSensor, UltrasonicSensor, GyroSensor)
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
@@ -18,84 +18,89 @@ ev3 = EV3Brick()
 
 # Write your program here.
 ev3.speaker.beep()
-"""Left_drive=Port.C 
-Right_drive=Port.B
-Crane_motor=Port.A
-Front_button=Port.S1
-Light_sensor=Port.S3
-Ultrasonic_sensor=Port.S4"""
-# Motor definitions
-left_motor = Motor(Port.C)
-right_motor = Motor(Port.B)
-crane_motor= Motor(Port.A)
-robot = DriveBase(left_motor, right_motor, wheel_diameter= 56, axle_track= 118)
-# Sensor definitions
-left_light = ColorSensor(Port.S3)
-#right_light = ColorSensor(Port.S4) #La till denna själv ty enligt bilden ska det finnas två sensorer
+# Initialize the motors.
+left_motor = Motor(Port.B)
+right_motor = Motor(Port.C)
 ultra_sensor = UltrasonicSensor(Port.S4)
+#Crane_motor=Port.A
+Front_button=Port.S1
+crane_motor= Motor(Port.A)
 touch_sensor = TouchSensor(Port.S1)
-# Your code goes here
+# Initialize the color sensor.
+line_sensor = ColorSensor(Port.S3)
 
-#Declaring some varaibles for the robot
-running = True
+# Initialize the drive base.
+robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=104)
 
-line_color = Color.BLACK #Chosing to only detect black as the color
-floor_color = Color.WHITE #Floor is the white color
+# Calculate the light threshold. Choose values based on your measurements.
+BLUE = 80
+PURPLE= 95
+WHITE = 85
+threshold = (BLUE + WHITE) / 2
 
-default_speed = -40 #mm/s
-default_speed_crane = 0
-time = 100 #ms
-default_speed_touch = 100
-default_speede = 0
-#Making the robot move at normal speed
-#left_motor.dc(default_speed)
-#right_motor.dc(default_speed)
+# Set the drive speed at 100 millimeters per second.
+DRIVE_SPEED = -30
 
-#Program loop
-while running:
+# Set the gain of the proportional line controller. This means that for every
+# percentage point of light deviating from the threshold, we set the turn
+# rate of the drivebase to 1.2 degrees per second.
+
+# For example, if the light value deviates from the threshold by 10, the robot
+# steers at 101.2 = 12 degrees per second.
+PROPORTIONAL_GAIN = 1.2
+
+# def forward():
+#     robot.drive(DRIVE_SPEED, turn_rate)
+
+
+#grÃ¶n 11-16
+# Start following the line endlessly.
+"""
+def dont_excpect():
+    start_time = time.time()
+    s = 4
+    for i in range (1, s):
+        end_time = time.time()
+        a = end_time - start_time
+        return a"""
+while True:
+    print(line_sensor.reflection())
+
+    if 11 <= line_sensor.reflection() <= 21:
+        robot.drive(-30, line_sensor.reflection())
+    elif line_sensor.reflection() < 11:
+        right_motor.run(200)
+        left_motor.run(-200)
+        print("I turned")
+        wait(2000)
+    elif line_sensor.reflection() > 77:
+        correction = (20-line_sensor.reflection())*2
+        robot.drive(-20, correction)
+        #print("yes yes")
+
+    elif 66 <= line_sensor.reflection() <= 79:
+        robot.drive(-30 , line_sensor.reflection())
+        #print("i working her on pruprle")
+
+    elif 56 <= line_sensor.reflection() <= 63:
+        robot.drive(-30 , line_sensor.reflection())
+
+    elif line_sensor.color() == Color.BLUE:
+        wait(30000)
+        print("Hello wrold")
+    else:
+        robot.drive(-43, line_sensor.reflection())
+
+       # print("I dont know")
     if touch_sensor.pressed():
 
-        crane_motor.dc(default_speed_crane - 100)
+        crane_motor.dc(-120)
         print("gg boys")
-        if not touch_sensor.pressed():
-            correction = (30-left_light.reflection())*2
-            robot.drive(-100,correction)
-            print("gg girls")
-            
-    #if not touch_sensor.pressed():
-     #   crane_motor.dc(default_speed_crane+50)
-     #   correction = (30-left_light.reflection())*2
-      #  robot.drive(-100,correction)
 
-    while left_light.reflection() == line_color:
-
-        right_motor.dc(default_speed - 20)
-        left_motor.dc(default_speed -20)
-        print("hello world")
-
-    if ultra_sensor.distance() < 200:
+    if ultra_sensor.distance() < 100:
         robot.stop()
-        wait(10)
-
-    crane_motor.dc(default_speed_crane+50)
-    correction = (20-left_light.reflection())*2
-    robot.drive(-100,correction)
-
-    
-    
-        
-"""PROPORTIONAL_GAIN = 1.2
-
-# Start following the line endlessly.
-while True:
-    # Calculate the deviation from the threshold.
-    deviation = line_sensor.reflection() - threshold
-
-    # Calculate the turn rate.
-    turn_rate = PROPORTIONAL_GAIN * deviation
-
-    # Set the drive base speed and turn rate.
-    robot.drive(DRIVE_SPEED, turn_rate)
-
-    # You can wait for a short time or do other things in this loop.
-    wait(10)"""
+        crane_motor.dc(10)
+        wait(5000)
+        DRIVE_SPEED = 100
+        robot.stop()
+        wait(5000)
