@@ -2,11 +2,11 @@
 
 ## Members of the group
 
--Ahmad Kamal  Eddin
--Gubran Alsheikh Ali
--Samir Akhalil
--Mohamad Omar Eid Dalal
--Majdi Albridi
+Ahmad Kamal  Eddin.
+Gubran Alsheikh Ali.
+Samir Akhalil.
+Mohamad Omar Eid Dalal.
+Majdi Albridi.
 
 ## Project Description
 -- Place a short description of the project so that the reader know what the goal of the repository is --
