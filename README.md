@@ -2,8 +2,11 @@
 
 ## Members of the group
 -- Replace with student information --
-* Adam Svensson adv@bth.se
-* Albin Persson alo@bth.se
+Ahmad Kamal  Eddin
+Gubran Alsheikh Ali
+Samir Akhalil
+Mohamad Omar Eid Dalal
+Majdi Albridi
 
 ## Project Description
 -- Place a short description of the project so that the reader know what the goal of the repository is --
