@@ -69,10 +69,14 @@ while True:
     if 11 <= line_sensor.reflection() <= 21:
         robot.drive(-30, line_sensor.reflection())
     elif line_sensor.reflection() < 11:
-        right_motor.run(200)
-        left_motor.run(-200)
-        print("I turned")
-        wait(2000)
+        robot.stop()
+        correction = (20-line_sensor.reflection())
+        robot.drive(-20, correction)
+        if line_sensor.reflection() < 11:
+            correction = (20-line_sensor.reflection())
+            robot.drive(-20, -correction)
+        # print("I turned")
+        # wait(2000)
     elif line_sensor.reflection() > 77:
         correction = (20-line_sensor.reflection())*2
         robot.drive(-20, correction)
@@ -95,6 +99,7 @@ while True:
     if touch_sensor.pressed():
 
         crane_motor.dc(-120)
+        robot.distance(50)
         print("gg boys")
 
     if ultra_sensor.distance() < 100:
