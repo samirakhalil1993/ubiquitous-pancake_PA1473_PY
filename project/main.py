@@ -1,13 +1,12 @@
 #!/usr/bin/env pybricks-micropython
-import sys
-import __init__
-
-def main():
-    return 0
-
-if __name__ == '__main__':
-    sys.exit(main())
-
+from pybricks.hubs import EV3Brick
+from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
+                                 InfraredSensor, UltrasonicSensor, GyroSensor)
+from pybricks.parameters import Port, Stop, Direction, Button, Color
+from pybricks.tools import wait, StopWatch, DataLog
+from pybricks.robotics import DriveBase
+from pybricks.media.ev3dev import SoundFile, ImageFile
+import time
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -34,79 +33,94 @@ line_sensor = ColorSensor(Port.S3)
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=104)
 
 # Calculate the light threshold. Choose values based on your measurements.
-BLUE = 80
-PURPLE= 95
-WHITE = 85
-threshold = (BLUE + WHITE) / 2
+
+
+WHITE = 81
+ROSE= 60
+PURPLE=15
+DARK_GREEN = 20
+BLUE= 12
+GREEN = 13
+
 
 # Set the drive speed at 100 millimeters per second.
-DRIVE_SPEED = -30
-
-# Set the gain of the proportional line controller. This means that for every
-# percentage point of light deviating from the threshold, we set the turn
-# rate of the drivebase to 1.2 degrees per second.
-
-# For example, if the light value deviates from the threshold by 10, the robot
-# steers at 101.2 = 12 degrees per second.
-PROPORTIONAL_GAIN = 1.2
-
-# def forward():
-#     robot.drive(DRIVE_SPEED, turn_rate)
+DRIVE_SPEED = -83
 
 
-#grÃ¶n 11-16
-# Start following the line endlessly.
-"""
-def dont_excpect():
-    start_time = time.time()
-    s = 4
-    for i in range (1, s):
-        end_time = time.time()
-        a = end_time - start_time
-        return a"""
+
+def line_follwing():
+    correction = (30 - line_sensor.reflection())*3
+    robot.drive(DRIVE_SPEED , correction )
+    
+
+def correction():
+    robot.drive(-70, line_sensor.reflection())
+    robot.drive(50,200)
+    robot.drive(-100,200)
+
+
+def white():
+    robot.drive(50,-100 )
+
+
+
+
+  
+  
+
+print(line_sensor.reflection()) 
+    
 while True:
-    print(line_sensor.reflection())
+        if line_sensor.reflection() <= DARK_GREEN :
+            line_follwing()
+            print("DARK_GREEN")
+            
+            
+            
+        elif BLUE < line_sensor.reflection() < WHITE:
+            line_follwing()
+            print("ROSE")
 
-    if 11 <= line_sensor.reflection() <= 21:
-        robot.drive(-30, line_sensor.reflection())
-    elif line_sensor.reflection() < 11:
-        robot.stop()
-        correction = (20-line_sensor.reflection())
-        robot.drive(-20, correction)
-        if line_sensor.reflection() < 11:
-            correction = (20-line_sensor.reflection())
-            robot.drive(-20, -correction)
-        # print("I turned")
-        # wait(2000)
-    elif line_sensor.reflection() > 77:
-        correction = (20-line_sensor.reflection())*2
-        robot.drive(-20, correction)
-        #print("yes yes")
+        elif PURPLE < line_sensor.reflection() < ROSE:
+            line_follwing()
+            print("BLUE")
 
-    elif 66 <= line_sensor.reflection() <= 79:
-        robot.drive(-30 , line_sensor.reflection())
-        #print("i working her on pruprle")
+        elif GREEN < line_sensor.reflection() < BLUE:
+            line_follwing()
+            print("PURPLE")
+            
 
-    elif 56 <= line_sensor.reflection() <= 63:
-        robot.drive(-30 , line_sensor.reflection())
+        elif DARK_GREEN < line_sensor.reflection() < PURPLE :
+            line_follwing()
+            print("GREEN")
+        
+        elif WHITE > line_sensor.reflection() > ROSE :
+            correction()
+            print("WHITE/2")
+        
+        else:
+            white()
+            print("WHITE")
 
-    elif line_sensor.color() == Color.BLUE:
-        wait(30000)
-        print("Hello wrold")
-    else:
-        robot.drive(-43, line_sensor.reflection())
+        
 
-       # print("I dont know")
-    if touch_sensor.pressed():
+        if touch_sensor.pressed():
 
-        crane_motor.dc(-120)
-        robot.distance(50)
-        print("gg boys")
+            crane_motor.dc(-120)
+           # robot.distance(50)
+            
 
-    if ultra_sensor.distance() < 100:
-        robot.stop()
-        crane_motor.dc(10)
-        wait(5000)
-        DRIVE_SPEED = 100
-        robot.stop()
-        wait(5000)
+        if ultra_sensor.distance() < 100:
+            robot.stop()
+            crane_motor.dc(10)
+            wait(5000)
+            DRIVE_SPEED = 100
+            robot.stop()
+            wait(5000)
+
+
+    # #     # else:
+    # #     #     robot.drive(-43, line_sensor.reflection())
+
+    # Start following the line endlessly.
+
