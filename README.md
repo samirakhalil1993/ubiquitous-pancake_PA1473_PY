@@ -9,7 +9,10 @@
 - 5-Majdi Albridi.
 
 ## Project Description
--- Place a short description of the project so that the reader know what the goal of the repository is --
+-- this project is a code written in python language. The goal of the code is to get an EV_3 truck 
+robot to do certain things, such as moving boxes from one warehouse to another by following 
+the ferry lines on the floor. with the help of its color sensor, the robot can know where it
+is and where it is going.--
 
 ## User stories
 
