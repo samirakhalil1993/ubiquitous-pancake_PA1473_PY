@@ -6,7 +6,8 @@ from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
-import time
+import time 
+from time import time, sleep
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -37,10 +38,10 @@ robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=104)
 
 WHITE = 81
 ROSE= 60
-PURPLE=15
 DARK_GREEN = 20
-BLUE= 12
+PURPLE=15
 GREEN = 13
+BLUE= 12
 
 
 # Set the drive speed at 100 millimeters per second.
@@ -69,58 +70,63 @@ def white():
   
 
 print(line_sensor.reflection()) 
-    
+
+
 while True:
-        if line_sensor.reflection() <= DARK_GREEN :
-            line_follwing()
-            print("DARK_GREEN")
-            
-            
-            
-        elif BLUE < line_sensor.reflection() < WHITE:
-            line_follwing()
-            print("ROSE")
-
-        elif PURPLE < line_sensor.reflection() < ROSE:
-            line_follwing()
-            print("BLUE")
-
-        elif GREEN < line_sensor.reflection() < BLUE:
-            line_follwing()
-            print("PURPLE")
-            
-
-        elif DARK_GREEN < line_sensor.reflection() < PURPLE :
-            line_follwing()
-            print("GREEN")
+    sleep(10 - time() % 10)
+    
+    while True:
         
-        elif WHITE > line_sensor.reflection() > ROSE :
-            correction()
-            print("WHITE/2")
-        
-        else:
-            white()
-            print("WHITE")
+            if line_sensor.reflection() <= DARK_GREEN :
+                line_follwing()
+                print("DARK_GREEN")
+                
+                
+                
+            elif BLUE < line_sensor.reflection() < WHITE:
+                line_follwing()
+                print("ROSE")
 
-        
+            elif PURPLE < line_sensor.reflection() < ROSE:
+                line_follwing()
+                print("BLUE")
 
-        if touch_sensor.pressed():
+            elif GREEN < line_sensor.reflection() < BLUE:
+                line_follwing()
+                print("PURPLE")
+                
 
-            crane_motor.dc(-120)
-           # robot.distance(50)
+            elif DARK_GREEN < line_sensor.reflection() < PURPLE :
+                line_follwing()
+                print("GREEN")
+            
+            elif WHITE > line_sensor.reflection() > ROSE :
+                correction()
+                print("WHITE/2")
+            
+            else:
+                white()
+                print("WHITE")
+
             
 
-        if ultra_sensor.distance() < 100:
-            robot.stop()
-            crane_motor.dc(10)
-            wait(5000)
-            DRIVE_SPEED = 100
-            robot.stop()
-            wait(5000)
+            if touch_sensor.pressed():
+
+                crane_motor.dc(-120)
+            # robot.distance(50)
+                
+
+            if ultra_sensor.distance() < 100:
+                robot.stop()
+                crane_motor.dc(10)
+                wait(5000)
+                DRIVE_SPEED = 100
+                robot.stop()
+                wait(5000)
 
 
-    # #     # else:
-    # #     #     robot.drive(-43, line_sensor.reflection())
+        # #     # else:
+        # #     #     robot.drive(-43, line_sensor.reflection())
 
-    # Start following the line endlessly.
+        # Start following the line endlessly.
 
