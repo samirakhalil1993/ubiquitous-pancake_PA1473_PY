@@ -17,7 +17,7 @@ is and where it is going.--
 ## User stories
 
 - [X] Code reflection.
-- [ ] pick a pallet in a spesific time.
+- [X] pick a pallet in a spesific time.
 - [ ] Return to the specified area in a safe manner.
 - [ ] Have a truck recognize a misplaced item.
 - [X] Have a truck pickup an item (pallet) 
